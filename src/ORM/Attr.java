@@ -10,15 +10,15 @@ package ORM;
  */
 public class Attr {
 
-    public Attr(String name, String type, String format, Object val) {
+    public Attr(String name, String type, String format, Object value) {
         this.name = name;
         this.type = type;
-        this.val = val;
+        this.value = value;
         this.format = format;
     }
 
     public String name;
     public String type;
     public String format;
-    public Object val;
+    public Object value;
 }

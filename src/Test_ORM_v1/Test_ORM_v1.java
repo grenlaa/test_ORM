@@ -6,6 +6,7 @@ package Test_ORM_v1;
 
 import bd.Group_obj;
 import ORM.Service;
+import bd.Group_obj1;
 import configuration.config;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -23,21 +24,27 @@ public class Test_ORM_v1 {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
-        HashMap<String, Object> FIELD = new HashMap<>();
-        FIELD.put("id", "asd13d");
-        FIELD.put("position", "20.23pp,12.312ps");
+//        HashMap<String, Object> FIELD = new HashMap<>();
+//        FIELD.put("id", "asd13d");
+//        FIELD.put("position", "20.23pp,12.312ps");
 //        FIELD.put("name_position", "rassvet");
-        FIELD.put("time_open", "20t20m20s");
-        FIELD.put("count", 5);
+//        FIELD.put("time_open", "20t20m20s");
+//        FIELD.put("count", 5);
 
-        Group_obj group_obj = new Group_obj(FIELD);
-//        System.out.println("");
+        Group_obj1 group_obj1 = new Group_obj1();
+        group_obj1.id = 1001;
         String[] Conect_config = config.get_config("4");
         Service Service = new Service(Conect_config);
-//        Group_obj group_obj2 = Service.findById(Group_obj.class, "10");
-        List<Group_obj> group_obj3 = Service.findAll(Group_obj.class);
 
-        Service.save(group_obj);
+        Service.save(group_obj1);
+
+//        Group_obj group_obj2 = Service.findById(Group_obj.class, "10");
+        List<Group_obj1> group_obj3 = Service.findAll(Group_obj1.class);
+        for (int i = 0; i < group_obj3.size(); i++) {
+            group_obj3.get(i).id += 1000;
+
+        }
+//        Service.save(group_obj);
         Service.save(group_obj3);
         System.out.println("");
     }

@@ -85,39 +85,39 @@ public class BD_mng {
 
             if (list_attr.get(i) != null) {
                 Attr attr_ = list_attr.get(i);
-                if (attr_.type == "string") {
-                    if (attr_.val != null) {
-                        pst.setString(i + 1, attr_.val.toString());
+                if (attr_.type.equals("string")) {
+                    if (attr_.value != null) {
+                        pst.setString(i + 1, attr_.value.toString());
                     } else {
                         pst.setNull(i + 1, java.sql.Types.VARCHAR);
                     }
                 }
-                if (attr_.type == "int") {
-                    if (attr_.val != null) {
-                        pst.setInt(i + 1, Integer.parseInt(attr_.val.toString()));
+                if (attr_.type.equals("int")) {
+                    if (attr_.value != null) {
+                        pst.setInt(i + 1, Integer.parseInt(attr_.value.toString()));
                     } else {
                         pst.setNull(i + 1, java.sql.Types.INTEGER);
                     }
                 }
-                if (attr_.type == "bigint") {
+                if (attr_.type.equals("bigint")) {
 
                 }
-                if (attr_.type == "float") {
-                    if (attr_.val != null) {
-                        pst.setFloat(i + 1, Float.parseFloat(attr_.val.toString().replace(",", ".")));
+                if (attr_.type.equals("float")) {
+                    if (attr_.value != null) {
+                        pst.setFloat(i + 1, Float.parseFloat(attr_.value.toString().replace(",", ".")));
                     } else {
                         pst.setNull(i + 1, java.sql.Types.FLOAT);
                     }
                 }
-                if (attr_.type == "date") {
-                    if (attr_.val != null) {
+                if (attr_.type.equals("date")) {
+                    if (attr_.value != null) {
                         try {
                             java.sql.Timestamp P_date;
                             if (attr_.format == "") {
-                                P_date = new java.sql.Timestamp(((Date) attr_.val).getTime());
+                                P_date = new java.sql.Timestamp(((Date) attr_.value).getTime());
                             } else {
                                 SimpleDateFormat formatForDateNow = new SimpleDateFormat(attr_.format);
-                                P_date = new java.sql.Timestamp(formatForDateNow.parse(attr_.val.toString().toString()).getTime());
+                                P_date = new java.sql.Timestamp(formatForDateNow.parse(attr_.value.toString().toString()).getTime());
                             }
                             pst.setTimestamp(i + 1, P_date);
                         } catch (Exception ex) {
@@ -130,17 +130,17 @@ public class BD_mng {
                     }
                 }
 
-                if (attr_.type == "bytes") {
-                    if (attr_.val != null) {
-                        pst.setBytes(i + 1, (byte[]) attr_.val);
+                if (attr_.type.equals("bytes")) {
+                    if (attr_.value != null) {
+                        pst.setBytes(i + 1, (byte[]) attr_.value);
                     } else {
                         pst.setNull(i + 1, java.sql.Types.BLOB);
                     }
                 }
 
-                if (attr_.type == "boolean") {
-                    if (attr_.val != null) {
-                        pst.setBoolean(i + 1, (Boolean) attr_.val);
+                if (attr_.type.equals("boolean")) {
+                    if (attr_.value != null) {
+                        pst.setBoolean(i + 1, (Boolean) attr_.value);
                     } else {
                         pst.setNull(i + 1, java.sql.Types.BOOLEAN);
                     }

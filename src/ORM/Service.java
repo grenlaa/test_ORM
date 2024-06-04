@@ -79,6 +79,7 @@ public class Service {
         String table_name = clazz.getDeclaredAnnotation(Table.class).name();
 
         List<T> all_ret = new ArrayList<>();
+        
         Constructor<?> foo = clazz.getConstructor(HashMap.class);
 
         for (ListIterator<HashMap<String, Object>> iter = bd_mng.find_all(table_name, id_name, 0, 0).listIterator(); iter.hasNext();) {

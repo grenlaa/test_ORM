@@ -22,6 +22,9 @@ import java.util.Map;
  */
 public abstract class Class_base {
 
+    public Class_base() throws Exception {
+    }
+
     public Class_base(HashMap<String, Object> map) throws Exception {
         for (Field field : this.getClass().getDeclaredFields()) {
             //Смотрим, есть ли у параметра нужная нам Аннотация @Command
@@ -40,7 +43,7 @@ public abstract class Class_base {
                     }
                 }
 
-                //                System.out.println(cmd.name() + "|" + map.get(cmd.name()));
+                System.out.println(cmd.name() + "|" + map.get(cmd.name()) + "|" + cmd.type());
                 //cmd.type() заменить на field.getType()
                 if (map.get(cmd.name()) != null) {
                     if (cmd.type() == "") {
