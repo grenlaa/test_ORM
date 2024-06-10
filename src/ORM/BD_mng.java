@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /*
@@ -31,6 +32,7 @@ public class BD_mng {
 
     private Connection connection;
     private String[] config;
+    private Pattern pattern = Pattern.compile(":[^\\s]+\\s");
 
     public BD_mng(String[] config) throws Exception {
         this.config = config;
@@ -194,6 +196,95 @@ public class BD_mng {
             }
             mtdas2.add(mtdas);
         }
+        return mtdas2;
+
+    }
+
+    public List<HashMap<String, Object>> select(ArrayList<Attr> list_attr, String sql) throws Exception {
+        PreparedStatement pst = connection.prepareStatement(sql);
+        // 2
+
+        for (int i = 0; i < list_attr.size(); i++) {
+
+            if (list_attr.get(i) != null) {
+                Attr attr_ = list_attr.get(i);
+                if (attr_.type.equals("string")) {
+                    if (attr_.value != null) {
+                        pst.setString(i + 1, attr_.value.toString());
+                    } else {
+                        pst.setNull(i + 1, java.sql.Types.VARCHAR);
+                    }
+                }
+                if (attr_.type.equals("int")) {
+                    if (attr_.value != null) {
+                        pst.setInt(i + 1, Integer.parseInt(attr_.value.toString()));
+                    } else {
+                        pst.setNull(i + 1, java.sql.Types.INTEGER);
+                    }
+                }
+                if (attr_.type.equals("bigint")) {
+
+                }
+                if (attr_.type.equals("float")) {
+                    if (attr_.value != null) {
+                        pst.setFloat(i + 1, Float.parseFloat(attr_.value.toString().replace(",", ".")));
+                    } else {
+                        pst.setNull(i + 1, java.sql.Types.FLOAT);
+                    }
+                }
+                if (attr_.type.equals("date")) {
+                    if (attr_.value != null) {
+                        try {
+                            java.sql.Timestamp P_date;
+                            if (attr_.format == "") {
+                                P_date = new java.sql.Timestamp(((Date) attr_.value).getTime());
+                            } else {
+                                SimpleDateFormat formatForDateNow = new SimpleDateFormat(attr_.format);
+                                P_date = new java.sql.Timestamp(formatForDateNow.parse(attr_.value.toString().toString()).getTime());
+                            }
+                            pst.setTimestamp(i + 1, P_date);
+                        } catch (Exception ex) {
+                            pst.setNull(i + 1, java.sql.Types.TIMESTAMP);
+                        }
+//                        java.util.Date date = new SimpleDateFormat(date_format).parse(sql_param.get(mtd.get(i).name).toString()).getTime();
+//                        pst.setDate(i + 1, new java.sql.Date(new SimpleDateFormat(date_format).parse().getTime()));
+                    } else {
+                        pst.setNull(i + 1, java.sql.Types.TIMESTAMP);
+                    }
+                }
+
+                if (attr_.type.equals("bytes")) {
+                    if (attr_.value != null) {
+                        pst.setBytes(i + 1, (byte[]) attr_.value);
+                    } else {
+                        pst.setNull(i + 1, java.sql.Types.BLOB);
+                    }
+                }
+
+                if (attr_.type.equals("boolean")) {
+                    if (attr_.value != null) {
+                        pst.setBoolean(i + 1, (Boolean) attr_.value);
+                    } else {
+                        pst.setNull(i + 1, java.sql.Types.BOOLEAN);
+                    }
+                }
+            }
+
+        }
+        ResultSet result = pst.executeQuery();
+        ResultSetMetaData md = result.getMetaData();
+
+        HashMap<String, Object> mtdas;
+        List<HashMap<String, Object>> mtdas2 = new ArrayList<>();
+
+        while (result.next()) {
+            mtdas = new HashMap<String, Object>();
+            for (int i = 0; i < md.getColumnCount(); i++) {
+                mtdas.put(md.getColumnName(i + 1), result.getObject(i + 1));
+            }
+            mtdas2.add(mtdas);
+        }
+
         return mtdas2;
 
     }

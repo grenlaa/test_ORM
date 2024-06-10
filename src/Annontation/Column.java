@@ -34,6 +34,8 @@ public @interface Column {
      */
     String type();
 
+    int scale() default 0;
+
     String format() default "";
 
     String def_value();

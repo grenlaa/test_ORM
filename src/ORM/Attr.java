@@ -10,15 +10,28 @@ package ORM;
  */
 public class Attr {
 
-    public Attr(String name, String type, String format, Object value) {
+    public Attr(String name, String type, String format, Object value, int scale) {
         this.name = name;
         this.type = type;
         this.value = value;
         this.format = format;
+        this.scale = scale;
     }
 
     public String name;
     public String type;
     public String format;
     public Object value;
+    public int scale;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this.name == obj.toString()) {
+            return true;
+
+        } else {
+            return false;
+        }
+    }
+
 }

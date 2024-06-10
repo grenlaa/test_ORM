@@ -11,8 +11,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -21,12 +24,52 @@ import java.util.ListIterator;
 public class Service {
 
     private BD_mng bd_mng;
+    private Pattern pattern = Pattern.compile(":[^\\s]+\\s");
 
     public Service(String[] config) throws Exception {
         this.bd_mng = new BD_mng(config);
     }
 
-    public <T> void save(List<T> objs) throws Exception {
+    public <T> List<T> employ(List<?> objs, String str) {
+
+        return null;
+    }
+
+//    public <T> List<T> employ(List<Attr> add_param , Object obj, String sql) throws Exception {
+    public <T> List<T> employ(List<Attr> add_param , Class<T> clazz, String sql) throws Exception {
+
+//        List<Attr> list_attr = (List<Attr>) Class_base.class.getDeclaredMethod("toListAttr", Class.class).invoke(obj, obj.getClass());
+        String table_name = clazz.getDeclaredAnnotation(Table.class).name();
+
+        sql = sql.replace(":table_name", table_name);
+
+        HashMap<String, Attr> map_attr = new HashMap<String, Attr>();
+
+//        for (Attr Attr_ : list_attr) {
+//            map_attr.put(":" + Attr_.name, Attr_);
+//        }
+        
+        for (Attr Attr_ : add_param) {
+            map_attr.put(":" + Attr_.name, Attr_);
+        }
+
+        Matcher matcher = pattern.matcher(sql);
+        ArrayList<Attr> list_param = new ArrayList<>();
+
+        while (matcher.find()) {
+            String param = sql.substring(matcher.start(), matcher.end() - 1);
+            sql = sql.replace(param, "?");
+            list_param.add(map_attr.get(param));
+            matcher = pattern.matcher(sql);
+        }
+
+        bd_mng.select(list_param, sql);
+
+        return null;
+    }
+
+//    public <T> void save(List<T> objs) throws Exception {
+    public void save(List<?> objs) throws Exception {
         if (objs.get(0) != null) {
 
             Object obj = objs.get(0);
@@ -47,7 +90,7 @@ public class Service {
 
     }
 
-    public <T> void save(Object obj) throws Exception {
+    public void save(Object obj) throws Exception {
 //        Field field = obj.getClass().getDeclaredField("id");
 //        String id_name = field.getAnnotation(Column.class).name();
         String table_name = obj.getClass().getDeclaredAnnotation(Table.class).name();
@@ -79,7 +122,7 @@ public class Service {
         String table_name = clazz.getDeclaredAnnotation(Table.class).name();
 
         List<T> all_ret = new ArrayList<>();
-        
+
         Constructor<?> foo = clazz.getConstructor(HashMap.class);
 
         for (ListIterator<HashMap<String, Object>> iter = bd_mng.find_all(table_name, id_name, 0, 0).listIterator(); iter.hasNext();) {

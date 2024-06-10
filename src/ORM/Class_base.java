@@ -85,7 +85,7 @@ public abstract class Class_base {
             if (field.isAnnotationPresent(Column.class)) {
                 Column cmd = field.getAnnotation(Column.class);
                 field.setAccessible(true);
-                map.add(new Attr(cmd.name(), cmd.type(), cmd.format(), field.get(this)));
+                map.add(new Attr(cmd.name(), cmd.type(), cmd.format(), field.get(this), cmd.scale()));
 //                System.out.println(cmd.name() + "|" + field.get(this));
             }
         }
