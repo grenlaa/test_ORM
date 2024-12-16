@@ -23,11 +23,11 @@ import java.util.regex.Pattern;
  */
 public class Service {
 
-    private BD_mng bd_mng;
+    private BD_mng_old_v1 bd_mng;
     private Pattern pattern = Pattern.compile(":[^\\s]+\\s");
 
     public Service(String[] config) throws Exception {
-        this.bd_mng = new BD_mng(config);
+        this.bd_mng = new BD_mng_old_v1(config);
     }
 
     public <T> List<T> employ(List<?> objs, String str) {
@@ -36,7 +36,7 @@ public class Service {
     }
 
 //    public <T> List<T> employ(List<Attr> add_param , Object obj, String sql) throws Exception {
-    public <T> List<T> employ(List<Attr> add_param , Class<T> clazz, String sql) throws Exception {
+    public <T> List<T> employ(List<Attr> add_param, Class<T> clazz, String sql) throws Exception {
 
 //        List<Attr> list_attr = (List<Attr>) Class_base.class.getDeclaredMethod("toListAttr", Class.class).invoke(obj, obj.getClass());
         String table_name = clazz.getDeclaredAnnotation(Table.class).name();
@@ -48,7 +48,6 @@ public class Service {
 //        for (Attr Attr_ : list_attr) {
 //            map_attr.put(":" + Attr_.name, Attr_);
 //        }
-        
         for (Attr Attr_ : add_param) {
             map_attr.put(":" + Attr_.name, Attr_);
         }

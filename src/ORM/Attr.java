@@ -10,7 +10,7 @@ package ORM;
  */
 public class Attr {
 
-    public Attr(String name, String type, String format, Object value, int scale) {
+    public Attr(String name, String type, String format, Object value, Integer scale) {
         this.name = name;
         this.type = type;
         this.value = value;
@@ -22,7 +22,7 @@ public class Attr {
     public String type;
     public String format;
     public Object value;
-    public int scale;
+    public Integer scale;
 
     @Override
     public boolean equals(Object obj) {

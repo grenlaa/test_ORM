@@ -5,11 +5,13 @@
 package ORM;
 
 import Annontation.*;
+import ORM.SQL_query.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -21,7 +23,7 @@ import java.util.regex.Pattern;
  *
  * @author fursov.ga
  */
-public class Service1 {
+public class Service1 implements Service_API {
 
     private BD_mng bd_mng;
     private Pattern pattern = Pattern.compile(":[^\\s]+\\s");
@@ -30,65 +32,49 @@ public class Service1 {
         this.bd_mng = new BD_mng(config);
     }
 
-    public <T> List<T> select(List<Attr> add_param, Class<T> clazz, String sql) throws Exception {
-
-        String table_name = clazz.getDeclaredAnnotation(Table.class).name();
-
-        sql = sql.replace(":table_name", table_name);
-
-        HashMap<String, Attr> map_attr = new HashMap<String, Attr>();
-
-        for (Attr Attr_ : add_param) {
-            map_attr.put(":" + Attr_.name, Attr_);
-        }
-
-        Matcher matcher = pattern.matcher(sql);
-        ArrayList<Attr> list_param = new ArrayList<>();
-
-        while (matcher.find()) {
-            String param = sql.substring(matcher.start(), matcher.end() - 1);
-            sql = sql.replace(param, "?");
-            list_param.add(map_attr.get(param));
-            matcher = pattern.matcher(sql);
-        }
-
-        Constructor<?> foo = clazz.getConstructor(HashMap.class);
-        List<T> all_ret = new ArrayList<>();
-
-        for (ListIterator<HashMap<String, Object>> iter = bd_mng.select(list_param, sql).listIterator(); iter.hasNext();) {
-
-            all_ret.add((T) foo.newInstance(iter.next()));
-
-        }
-        return all_ret;
+    public <T> List<T> select(Class<T> clazz) throws Exception {
+        return (List<T>) query_select.select(clazz, bd_mng);
     }
 
-    
-    
-    public void insert(List<Attr> add_param, Class<?> clazz, String sql) throws Exception {
+    public <T> List<T> select(Class<T> clazz, String sql) throws Exception {
+        return (List<T>) query_select.select(clazz, sql, bd_mng);
+    }
 
-        String table_name = clazz.getDeclaredAnnotation(Table.class).name();
+    public <T> List<T> select(Class<T> clazz, List<Attr> add_param, String sql) throws Exception {
+        return (List<T>) query_select.select(clazz, add_param, sql, bd_mng);
+    }
 
-        sql = sql.replace(":table_name", table_name);
+    public <T> List<T> select(Class_base clazz) throws Exception {
+        return (List<T>) query_select.select(clazz.getClass(), bd_mng);
+    }
 
-        HashMap<String, Attr> map_attr = new HashMap<String, Attr>();
+    public <T> List<T> select(Class_base clazz, String sql) throws Exception {
+        return (List<T>) query_select.select(clazz.getClass(), clazz.toListAttr(), sql, bd_mng);
+    }
 
-        for (Attr Attr_ : add_param) {
-            map_attr.put(":" + Attr_.name, Attr_);
-        }
+    public <T> List<T> select(Class_base clazz, List<Attr> add_param, String sql) throws Exception {
+        add_param.addAll(clazz.toListAttr());
+        return (List<T>) query_select.select(clazz.getClass(), add_param, sql, bd_mng);
+    }
 
-        Matcher matcher = pattern.matcher(sql);
-        ArrayList<Attr> list_param = new ArrayList<>();
+    public void insert(Class_base clazz) throws Exception {
+        query_insert.insert(new ArrayList<Class_base>(Arrays.asList(clazz)), bd_mng);
+    }
+//
+//    public void insert(Class_base clazz, String sql) throws Exception {
+//    }
+//
+//    public void insert(Class_base clazz, List<Attr> add_param, String sql) throws Exception {
+//    }
 
-        while (matcher.find()) {
-            String param = sql.substring(matcher.start(), matcher.end() - 1);
-            sql = sql.replace(param, "?");
-            list_param.add(map_attr.get(param));
-            matcher = pattern.matcher(sql);
-        }
+    public void insert(List<?> clazz) throws Exception {
+        query_insert.insert(clazz, bd_mng);
+    }
 
-        bd_mng.select(list_param, sql);
+    public void insert(List<Class_base> clazz, String sql) throws Exception {
+    }
 
+    public void insert(List<Class_base> clazz, List<Attr> add_param, String sql) throws Exception {
     }
 
 }

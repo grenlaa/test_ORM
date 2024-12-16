@@ -35,24 +35,42 @@ public class Test_ORM_v1 {
 //        FIELD.put("time_open", "20t20m20s");
 //        FIELD.put("count", 5);
 
-        Group_obj1 group_obj1 = new Group_obj1();
-        group_obj1.id = 1001;
+//        Group_obj1 group_obj1 = new Group_obj1(202);
+//        group_obj1.id = 202;
+//        Object obj = group_obj1;
+//        System.out.println(obj.getClass());
+//        group_obj1.id = 1001;
+//        System.out.println(Class_base.getSQLselect(Group_obj1.class));
         String[] Conect_config = config.get_config("4");
-        Service Service = new Service(Conect_config);
+//        Service Service = new Service(Conect_config);
         Service1 Service1 = new Service1(Conect_config);
 
-      
-        List<Attr> list_arr = (List<Attr>) Class_base.class.getDeclaredMethod("toListAttr", Class.class).invoke(group_obj1, group_obj1.getClass());
-        
-        List<Group_obj1> group_obj4 = Service1.select(list_arr , Group_obj1.class, group_obj1.sql_all);
+//        Group_obj1 group_obj1 = (Group_obj1) Service1.select(new Group_obj1(202), "Select FT_KEY, FT_ANC_KEY From :table_name where :FT_KEY = FT_KEY").get(0);
+//        List<Group_obj1> group_obj4 = Service1.select(Group_obj1.class, group_obj1.toListAttr(), "Select * From :table_name where :FT_KEY < FT_KEY");
+        Service1.insert(new Group_obj1(953));
+
+        //       
+        //       
+        //       
+        //       
+        //       
+        //       
+        //       
+        //       
+        //       
+        //       
+        //
+//        List<Attr> list_arr = group_obj1.toListAttr();
+//        List<Attr> list_arr = (List<Attr>) Class_base.class.getDeclaredMethod("toListAttr", Class.class).invoke(group_obj1, group_obj1.getClass());
+//        List<Group_obj1> group_obj4 = Service1.select(Group_obj1.class);
+//        List<Group_obj1> group_obj5 = Service1.select(Group_obj1.class, list_arr, group_obj1.sql_select_t1);
 //        Service.save(group_obj1);
 //        Group_obj group_obj2 = Service.findById(Group_obj.class, "10");
-        List<Group_obj1> group_obj3 = Service.findAll(Group_obj1.class);
-        for (int i = 0; i < group_obj3.size(); i++) {
-            group_obj3.get(i).id += 1000;
-
-        }
-
+//        List<Group_obj1> group_obj3 = Service.findAll(Group_obj1.class);
+//        for (int i = 0; i < group_obj3.size(); i++) {
+//            group_obj3.get(i).id += 1000;
+//
+//        }
 //        Service.employ(list_arr,group_obj1.getClass(), group_obj1.sql_select_t1);
 //        Service.save(group_obj);
 //        Service.save(group_obj3);

@@ -28,13 +28,13 @@ import java.util.regex.Pattern;
 что сделать
 
  */
-public class BD_mng {
+public class BD_mng_old_v1 {
 
     private Connection connection;
     private String[] config;
     private Pattern pattern = Pattern.compile(":[^\\s]+\\s");
 
-    public BD_mng(String[] config) throws Exception {
+    public BD_mng_old_v1(String[] config) throws Exception {
         this.config = config;
         connect();
     }
@@ -46,7 +46,38 @@ public class BD_mng {
         connection = DriverManager.getConnection(config[1], config[2], config[3]);
     }
 
-    public void insert(String sql, List<Attr> list_attr) throws Exception {
+    public void save_many(ArrayList<List<Attr>> list_row, String table) throws Exception {
+        List<Attr> list_attr = list_row.get(0);
+
+        String sql = "INSERT INTO " + table + "(";
+
+        String sql_q = "VALUES (";
+
+        for (int i = 0; i < list_attr.size() - 1; i++) {
+            sql += list_attr.get(i).name + ",";
+            sql_q += "?,";
+        }
+        sql += list_attr.get(list_attr.size() - 1).name + ") " + sql_q + "?)";
+
+        for (int i = 0; i < list_row.size() - 1; i++) {
+            save(list_row.get(i), sql);
+        }
+    }
+
+    public void save_one(List<Attr> list_attr, String table) throws Exception {
+        String sql = "INSERT INTO " + table + " (";
+        String sql_q = "VALUES (";
+
+        for (int i = 0; i < list_attr.size() - 1; i++) {
+            sql += list_attr.get(i).name + ",";
+            sql_q += "?,";
+        }
+        sql += list_attr.get(list_attr.size() - 1).name + ") " + sql_q + "?)";
+
+        save(list_attr, sql);
+    }
+
+    private void save(List<Attr> list_attr, String sql) throws Exception {
 
         // 2 создание sql запроса на добавление используя - metadata
         PreparedStatement pst = connection.prepareStatement(sql);
@@ -120,12 +151,38 @@ public class BD_mng {
 
         }
 
-        pst.execute();
+        pst.executeUpdate();
         pst.close();
     }
 
-    public List<HashMap<String, Object>> select(String sql) throws Exception {
+    public HashMap<String, Object> find_by_id(String table_name, String id_name, String id) throws Exception {
+
+        String sql = "Select * from " + table_name + " where " + id_name + "=" + id;
         Statement statement = connection.createStatement();
+
+        ResultSet result = statement.executeQuery(sql);
+        ResultSetMetaData md = result.getMetaData();
+
+        HashMap<String, Object> mtdas = new HashMap<String, Object>();
+
+        while (result.next()) {
+            for (int i = 0; i < md.getColumnCount(); i++) {
+                mtdas.put(md.getColumnName(i + 1), result.getObject(i + 1));
+            }
+        }
+        return mtdas;
+
+    }
+
+    public List<HashMap<String, Object>> find_all(String table_name, String id_name, int start, int count) throws Exception {
+
+        String sql = "Select * from " + table_name;
+
+        if (start != 0 && count != 0) {
+            sql += " where " + id_name + ">" + start + " and " + id_name + "<" + (start + count);
+        }
+        Statement statement = connection.createStatement();
+
         ResultSet result = statement.executeQuery(sql);
         ResultSetMetaData md = result.getMetaData();
 
@@ -139,8 +196,8 @@ public class BD_mng {
             }
             mtdas2.add(mtdas);
         }
-
         return mtdas2;
+
     }
 
     public List<HashMap<String, Object>> select(ArrayList<Attr> list_attr, String sql) throws Exception {
@@ -222,8 +279,6 @@ public class BD_mng {
         HashMap<String, Object> mtdas;
         List<HashMap<String, Object>> mtdas2 = new ArrayList<>();
 
-        
-        //скушает очень много памяти переделать
         while (result.next()) {
             mtdas = new HashMap<String, Object>();
             for (int i = 0; i < md.getColumnCount(); i++) {
@@ -247,8 +302,9 @@ public class BD_mng {
     public void save_with_field_verf(List<Attr> list_attr, String table_name) {
     }
 
-//    public void insert() {
-//    }
+    public void insert() {
+    }
+
     public void update() {
     }
 

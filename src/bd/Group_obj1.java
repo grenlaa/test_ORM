@@ -17,20 +17,19 @@ public class Group_obj1 extends Class_base {
 
     }
 
+    public Group_obj1(int id) throws Exception {
+        this.id = id;
+    }
+
     public Group_obj1(HashMap<String, Object> map) throws Exception {
         super(map);
     }
 
-    
-     @SQL(type = "select")
-    public static String sql_all = "Select * From :table_name ";
-
     @SQL(type = "select")
     public static String sql_select_t1 = "Select FT_KEY, FT_ANC_KEY From :table_name where :FT_KEY < FT_KEY ";
 
-    @SQL()
-    public static String sql_select_all;
-
+//    @SQL()
+//    public static String sql_select_all;
 //    public Group_obj(String map) {
 //        super(map);
 //    }
